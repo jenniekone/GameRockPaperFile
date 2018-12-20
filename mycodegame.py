@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec 11 17:48:39 2018
+Created on Mon Dec 17 17:33:01 2018
 @author: Jennie
 """
 
@@ -22,23 +22,24 @@ class RandomPlayer:
     def __init__(self):
         Player.__init__(self)
             
-    def move(self, RandomPlayerMove):
+    def move(self):
         
-        self.move = RandomPlayerMove
-        #use imported random function
-        RandomPlayerMove = random.randint(1,3) 
+        #use imported random function & choice
+        choices = ['Rock', 'Paper', 'Scissors']
+        random_player = random.choice(choices)
         
         #Computer choice is either rock, paper, or scissors 
-        if RandomPlayerMove == ("Rock"): 
-            print("The computer choses ROCK") 
-        elif RandomPlayerMove == ("Paper"): 
-            print("The computer choses PAPER") 
+        if random_player == ("Rock"): 
+            print("Opponent played Rock")
+            
+        elif random_player == ("Paper"): 
+            print("Opponent played Paper")
+            
         else: 
-            print("The computer choses SCISSORS") 
+            print("Opponent played Scissors") 
         
         #return value 
-        return RandomPlayerMove 
-   
+        return random_player  
       
         
 #Create human player class        
@@ -46,10 +47,18 @@ class HumanPlayer:
     def __init__(self):
         Player.__init__(self)
             
-    def move(self, HumanMove):
-        return HumanMove
+    def move(self):
+        while True:
+            human_player = input("'Rock', 'Paper', or 'Scissors' ")
+        #Detect invalid entry
+            if human_player.lower() not in moves:
+                print('Please choose Paper, Rock or Scissors: ')
+            else:
+                break
+            
+        return human_player
       
-        
+    
             
 ##class that remembers what move the opponent played last round
 class ReflectPlayer:
@@ -57,7 +66,7 @@ class ReflectPlayer:
         Player.__init__(self)
         self.ReflectPlayer = ReflectPlayer
     
-    #    def move (self): 
+    # def move 
     def move(self, move):
         self.move = move
         
@@ -76,6 +85,7 @@ class CyclePlayer:
         for move in moves:
             self.human_player_history[move] = 0
 
+
     def move(self, max_move):
         max_move = max(self.human_player_history.items(), key=lambda elem: elem[1])[0]
         if max_move == 'rock':
@@ -86,48 +96,62 @@ class CyclePlayer:
             return 'rock' 
 
 
-def beats(one, two):
-    return ((one == 'rock' and two == 'scissors') or
-            (one == 'scissors' and two == 'paper') or
-            (one == 'paper' and two == 'rock'))
+def beats(move1, move2):
+    if ((move1 == 'rock' and move2 == 'rock') or
+
+         (move1 == 'paper' and move2 == 'paper') or
+
+         (move1 == 'scissors' and move2 == 'scissors')):
+
+        return "** It's a TIE **"
+    
+
+    elif ((move1 == 'rock' and move2 == 'scissors') or
+
+          (move1 == 'scissors' and move2 == 'paper') or
+
+          (move1 == 'paper' and move2 == 'rock')):
+
+        return "** Human WINS **"
+
+    else:
+
+        return "** Random Player WINS **"
+
+
 
 #Create game class
 class Game:
-    def __init__(self, HumanPlayer, RandomPlayer):
-        self.HumanPlayer = HumanPlayer
-        self.RandomPlayer = RandomPlayer
-        
-    def play_round(self):
-        HumanMove = self.HumanPlayer.move()
-        RandomPlayerMove = self.RandomPlayer.move()
-        print(f"HumanPlayer: {HumanMove}  RandomPlayer: {RandomPlayerMove}")
-        self.HumanPlayer.learn(HumanMove, RandomPlayerMove)
-        self.RandomPlayer.learn(RandomPlayerMove, HumanMove)
-        
-        if beats(HumanMove, RandomPlayerMove):
-            print("HumanPlayer wins this round")
-            self.HumanPlayer.score += 1
-            
-        elif beats(RandomPlayerMove, HumanMove):
-            print("RandomPlayer wins this round")
-            self.RandomPlayer.score += 1   
-        else:
-            print("It's Tie, Play again!")
-            print(f"Scores, HumanPlayer: {self.p1.score} RandomPlayer: {self.p2.score}")
+    def __init__(self, human_player, random_player):
+        self.player1 = human_player
+        self.player2 = random_player
+        self.player1_score = 0
+        self.player2_score = 0
 
-    def play_game(self):
+
+    def play_round(self):            
+        move1 = self.player1.move()
+        move2 = self.player2.move()
+        print(f"Player 1: {move1}  Player 2: {move2}")
+        
+        if (move1 == move2):
+            print("it's a tie!")
+            
+        elif beats(move1, move2) is True:
+                self.player1_score += 1
+                
+        elif beats(move2, move1) is True:
+                self.player2_score += 1
+                    
+        print(f"Scores, HumanPlayer: {self.player1_score} RandomPlayer: {self.player2_score}")
+    
+    
+    def play_game(self):    
         print("Game start!")
-        for round in range(3):
+        for round in range(4):
             print(f"Round {round}:")
             self.play_round()
         print("Game over!")
-
-        if self.HumanPlayer.score > self.RandomPlayer.score:
-            print ("HumanPlayer Wins the Game!")
-        elif self.RandomPlayer.score > self.HumanPlayer.score:
-            print ("RandomPlayer Wins the Game!")
-        else:
-            print("a TIE!?")          
 
 
 if __name__ == '__main__':
