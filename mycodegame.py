@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Dec 17 17:33:01 2018
 @author: Jennie
@@ -97,6 +96,7 @@ class CyclePlayer:
 
 
 def beats(move1, move2):
+    
     if ((move1 == 'rock' and move2 == 'rock') or
 
          (move1 == 'paper' and move2 == 'paper') or
@@ -157,3 +157,5 @@ class Game:
 if __name__ == '__main__':
     game = Game(HumanPlayer(), RandomPlayer())
     game.play_game()
+
+
